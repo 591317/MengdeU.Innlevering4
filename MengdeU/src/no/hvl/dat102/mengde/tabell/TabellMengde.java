@@ -8,191 +8,222 @@ import no.hvl.dat102.exception.EmptyCollectionException;
 import no.hvl.dat102.mengde.adt.MengdeADT;
 
 public class TabellMengde<T> implements MengdeADT<T> {
-	// ADT-en Mengde implementert som tabell
-	//
-	private final static Random tilf = new Random();
-	private final static int STDK = 100;
-	private int antall;
-	private T[] tab;
+    // ADT-en Mengde implementert som tabell
+    //
+    private final static Random tilf = new Random();
+    private final static int STDK = 100;
+    private int antall;
+    private T[] tab;
 
-	public TabellMengde() {
-		this(STDK);
-	}
+    public TabellMengde() {
+        this(STDK);
+    }
 
-	public TabellMengde(int start) {
-		antall = 0;
-		tab = (T[]) (new Object[start]);
-	}
+    public TabellMengde(int start) {
+        antall = 0;
+        tab = (T[]) (new Object[start]);
+    }
 
-	@Override
-	public int antall() {
-		return antall;
-	}
+    @Override
+    public int antall() {
+        return antall;
+    }
 
-	@Override
-	public boolean erTom() {
-		return (antall == 0);
-	}
+    @Override
+    public boolean erTom() {
+        return (antall == 0);
+    }
 
-	@Override
-	public void leggTil(T element) {
-		if (!inneholder(element)) {
-			if (antall == tab.length) {
-				utvidKapasitet();
-			}
-			tab[antall] = element;
-			antall++;
-		}
-	}
+    @Override
+    public void leggTil(T element) {
+        if (!inneholder(element)) {
+            if (antall == tab.length) {
+                utvidKapasitet();
+            }
+            tab[antall] = element;
+            antall++;
+        }
+    }
 
-	private void utvidKapasitet() {
-		T[] hjelpetabell = (T[]) (new Object[2 * tab.length]);
-		for (int i = 0; i < tab.length; i++) {
-			hjelpetabell[i] = tab[i];
-		}
-		tab = hjelpetabell;
-	}
+    private void utvidKapasitet() {
+        T[] hjelpetabell = (T[]) (new Object[2 * tab.length]);
+        for (int i = 0; i < tab.length; i++) {
+            hjelpetabell[i] = tab[i];
+        }
+        tab = hjelpetabell;
+    }
 
-	@Override
-	public T fjernTilfeldig() {
-		if (erTom())
-			throw new EmptyCollectionException("mengde");
+    @Override
+    public T fjernTilfeldig() {
+        if (erTom())
+            throw new EmptyCollectionException("mengde");
 
-		T svar = null;
-		int indeks = tilf.nextInt(antall);
-		svar = tab[indeks];
-		tab[indeks] = tab[antall - 1];
-		antall--;
+        T svar = null;
+        int indeks = tilf.nextInt(antall);
+        svar = tab[indeks];
+        tab[indeks] = tab[antall - 1];
+        antall--;
 
-		return svar;
-	}
+        return svar;
+    }
 
-	@Override
-	public T fjern(T element) {
-		//TODO
-		// Søker etter og fjerner element. Returnerer null-ref ved ikke-funn
+    @Override
+    public T fjern(T element) {
+        //TODO
+        // Sï¿½ker etter og fjerner element. Returnerer null-ref ved ikke-funn
 
-		if (erTom())
-			throw new EmptyCollectionException("mengde");
+        if (erTom())
+            throw new EmptyCollectionException("mengde");
 
-		boolean funnet = false;
-		T svar = null;
-		/*
-		 * 
-		 */
-		return svar;
-	}
+        boolean funnet = false;
+        T svar = null;
 
-	@Override
-	public boolean inneholder(T element) {
-		boolean funnet = false;
-		for (int i = 0; (i < antall) && (!funnet); i++) {
-			if (tab[i].equals(element)) {
-				funnet = true;
-			}
-		}
-		return (funnet);
-	}
-	
-	/*
-	 * Når vi overkjører (override) equals- meteoden er det anbefalt at vi også
-	 * overkjører hascode-metoden da en del biblioterker burker hascode sammen med
-	 * equals. Vi kommer tilbake til forklaring og bruk av hascode senere i faget.
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + antall;
-		result = prime * result + Arrays.deepHashCode(tab);
-		return result;
-	}
+        for (int i = 0; i < tab.length; i++) {
 
-	@Override
-	public boolean equals(Object m2) {
-		//TODO
-		boolean likeMengder = true;
-		T element;
+            if (element.equals(tab[i])) {
+                funnet = true;
+                svar = element;
+                tab[i] = null;
+                antall--;
 
-		/*
-		 * ...
-		 */
-		return likeMengder;
-	}
+                for (int j = i; j < tab.length; j++) {
+                    tab[j] = tab[j+1];
+                }
+                return svar;
+            }
 
-	@Override
-	public void leggTilAlle(MengdeADT<T> m2) {
-		Iterator<T> teller = m2.oppramser();
-		while (teller.hasNext())
-			leggTil(teller.next());
-	}
+        }
 
-	/*
-	 * Denne versjonen av unionen er lite effekktiv
-	 * 
-	 * @Override public MengdeADT<T> union(MengdeADT<T> m2) { TabellMengde<T> begge
-	 * = new TabellMengde<T>(); for (int i = 0; i < antall; i++) {
-	 * begge.leggTil(tab[i]); } Iterator<T> teller = m2.oppramser();
-	 * 
-	 * while (teller.hasNext()) { begge.leggTil(teller.next()); } return
-	 * (MengdeADT<T>)begge; }
-	 */
-	@Override
 
-	public MengdeADT<T> union(MengdeADT<T> m2) {
-		//TODO
-		MengdeADT<T> begge = new TabellMengde<T>();
-		T element = null;
-		/*
-		 * ...
-		 * 
-		 */
-		return begge;
-	}//
+        return svar;
+    }
 
-	@Override
-	public MengdeADT<T> snitt(MengdeADT<T> m2) {
-		MengdeADT<T> snittM = new TabellMengde<T>();
-		T element = null;
-		/*
-		 * ...
-		 */
-		return snittM;
-	}
+    @Override
+    public boolean inneholder(T element) {
+        boolean funnet = false;
+        for (int i = 0; (i < antall) && (!funnet); i++) {
+            if (tab[i].equals(element)) {
+                funnet = true;
+            }
+        }
+        return (funnet);
+    }
 
-	@Override
-	public MengdeADT<T> differens(MengdeADT<T> m2) {
-		//TODO
-		MengdeADT<T> differensM = new TabellMengde<T>();
-		T element;
-		/*
-		 * Fyll ut
-		 * 
-		 * if (!m2.inneholder(element)) ((TabellMengde<T>) differensM).settInn(element);
-		 */
+    /*
+     * Nï¿½r vi overkjï¿½rer (override) equals- meteoden er det anbefalt at vi ogsï¿½
+     * overkjï¿½rer hascode-metoden da en del biblioterker burker hascode sammen med
+     * equals. Vi kommer tilbake til forklaring og bruk av hascode senere i faget.
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + antall;
+        result = prime * result + Arrays.deepHashCode(tab);
+        return result;
+    }
 
-		return differensM;
-	}
+    @Override
+    public boolean equals(Object m2) {
 
-	@Override
-	public boolean undermengde(MengdeADT<T> m2) {
-		//TODO
-		boolean erUnderMengde = true;
-		// ...
-		return false;
-	}
+        boolean likeMengder = false;
+        T element;
 
-	@Override
-	public Iterator<T> oppramser() {
-		return new TabellIterator<T>(tab, antall);
-	}
+        if (m2 instanceof TabellMengde) {
+            Iterator<T> m2it = ((TabellMengde<T>) m2).oppramser();
 
-	private void settInn(T element) {
-		if (antall == tab.length) {
-			utvidKapasitet();
-		}
-		tab[antall] = element;
-		antall++;
-	}
+            if (this.antall == ((TabellMengde<T>) m2).antall()) {
 
-}// class
+                while (m2it.hasNext()) {
+
+                    element = m2it.next();
+
+                    if (!this.inneholder(element)) {
+                        return likeMengder;
+
+                    }
+                }
+                likeMengder = true;
+            }
+        }
+        return likeMengder;
+    }
+
+
+    @Override
+    public void leggTilAlle(MengdeADT<T> m2) {
+        Iterator<T> teller = m2.oppramser();
+        while (teller.hasNext())
+            leggTil(teller.next());
+    }
+
+    /*
+     * Denne versjonen av unionen er lite effekktiv
+     *
+     * @Override public MengdeADT<T> union(MengdeADT<T> m2) { TabellMengde<T> begge
+     * = new TabellMengde<T>(); for (int i = 0; i < antall; i++) {
+     * begge.leggTil(tab[i]); } Iterator<T> teller = m2.oppramser();
+     *
+     * while (teller.hasNext()) { begge.leggTil(teller.next()); } return
+     * (MengdeADT<T>)begge; }
+     */
+    @Override
+
+    public MengdeADT<T> union(MengdeADT<T> m2) {
+        //TODO
+        MengdeADT<T> begge = new TabellMengde<T>();
+        T element = null;
+        /*
+         * ...
+         *
+         */
+        return begge;
+    }//
+
+    @Override
+    public MengdeADT<T> snitt(MengdeADT<T> m2) {
+        MengdeADT<T> snittM = new TabellMengde<T>();
+        T element = null;
+        /*
+         * ...
+         */
+        return snittM;
+    }
+
+    @Override
+    public MengdeADT<T> differens(MengdeADT<T> m2) {
+        //TODO
+        MengdeADT<T> differensM = new TabellMengde<T>();
+        T element;
+        /*
+         * Fyll ut
+         *
+         * if (!m2.inneholder(element)) ((TabellMengde<T>) differensM).settInn(element);
+         */
+
+        return differensM;
+    }
+
+    @Override
+    public boolean undermengde(MengdeADT<T> m2) {
+        //TODO
+        boolean erUnderMengde = true;
+        // ...
+        return false;
+    }
+
+    @Override
+    public Iterator<T> oppramser() {
+
+        return new TabellIterator<T>(tab, antall);
+    }
+
+    private void settInn(T element) {
+        if (antall == tab.length) {
+            utvidKapasitet();
+        }
+        tab[antall] = element;
+        antall++;
+    }
+
+}

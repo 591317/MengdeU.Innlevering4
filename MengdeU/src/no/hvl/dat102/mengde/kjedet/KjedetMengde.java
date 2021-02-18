@@ -74,11 +74,27 @@ public class KjedetMengde<T> implements MengdeADT<T> {
 
 		boolean funnet = false;
 		LinearNode<T> forgjenger, aktuell;
+		forgjenger = null;
+		aktuell = start;
 		T resultat = null;
-		/*
-		 * Fyll ut
-		 * 
-		 */
+
+		while (aktuell != null && aktuell.getElement().equals(element)){
+			forgjenger = aktuell;
+			aktuell = aktuell.getNeste();
+		}
+		if (aktuell != null && aktuell.getElement().equals(element)){
+			antall--;
+			resultat = aktuell.getElement();
+			if (forgjenger == null){
+				start = aktuell.getNeste();
+			}else{
+				forgjenger.setNeste(aktuell.getNeste());
+				if (aktuell ==)
+			}
+
+		}
+
+
 		return resultat;
 	}//
 
@@ -108,12 +124,24 @@ public class KjedetMengde<T> implements MengdeADT<T> {
 			return false;
 		} else {
 			boolean likeMengder = true;
+
 			MengdeADT<T> m2 = (KjedetMengde<T>) ny;
+
 			if (this.antall != m2.antall()) {
 				likeMengder = false;
 			} else {
+
 				likeMengder = true;
-				// ...
+				Iterator<T> m2it = m2.oppramser();
+
+				while (m2it.hasNext()){
+
+					T element = m2it.next();
+
+					if (!this.inneholder(element)){
+						return false;
+					}
+				}
 				return likeMengder;
 			}
 		}
